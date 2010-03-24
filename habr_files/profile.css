@@ -1,0 +1,556 @@
+/* Profile header	*/		
+			
+.profile-header {
+	float: left;
+	font-size: 12px;
+}
+	.nick-holder {
+		float: left;
+		width: 100%;
+		clear: both;
+	}
+		.profile-header h1 {
+			color: #666;
+			padding: 0;
+			font-size: 1em;
+		}
+			.profile-header h1 a {
+				font: 2.83em/135% Verdana, sans-serif; /*34px/12px*/
+				text-decoration: none;
+				color: #666;
+			}
+			
+		.nick-holder .avatar-link {
+			float: left;
+			padding-right: 15px;
+		}
+			.nick-holder .avatar-link img, .nick-holder .edit img, .hresume .edit img  {
+				border: 1px solid #DCDCDC;
+			}
+			
+			.hresume .edit img {margin-left:10px;}
+			
+		.nick-holder div {
+			float: left;
+		}
+				.nick-holder .twitter {
+					font: .9em/100% Arial, sans-serif;
+					font-weight: 400;
+					color: #999;
+					margin-bottom: 10px;
+					margin-top: -10px;
+					display: block;
+					float: left;
+				}
+
+
+/* Userinfo+microformats */
+
+.userinfo {
+	width: 100%;
+}
+
+.company .userinfo {
+	float: left;
+	clear:both;
+	margin-top: 20px;
+}
+
+.userinfo dl {
+	margin: 0 0 10px 0;
+	padding:0;
+	clear:left;
+	font-size: 1.33em; /*16/12*/
+	}
+.userinfo dl.fn {
+	float: left;
+	clear: both;
+}
+	.userinfo dl dt {
+		margin: 0;
+		padding: 0 .5em 0 0;
+		float: left;
+		width: 11em;
+		color:#666;
+		font-size: 83%;
+		font-weight:bold;
+		text-align: right;
+	}
+
+	.userinfo dl dd {
+		margin: 0 0 0 11em;
+		padding: 0 0 7px 12px;
+		text-align: left;
+		font-size: 83%;
+	}
+		
+	/* Так выводится в профайле заголовок имя юзера */		
+		
+	.userinfo dl.user-name {
+		float: none;
+		clear: both;
+		margin: 0 0 1em 9.85em;
+		padding-top: 1em;
+	}
+			.userinfo
+			.leader-position{
+				font-size:0.8em;
+				color:#999;
+				}
+			.userinfo dl.user-name dt, .userinfo dl.user-name dd {
+				display: block;
+				float: none;
+				width: auto;
+				margin: 0;
+				padding: 0;
+				text-align: left;
+				color: rgb(119, 119, 119);
+			}
+			.userinfo dl.user-name dt {
+				font-size: 156%;
+				font-weight: normal;
+			}
+				.userinfo dl.fn dd a {
+					color: rgb(119, 119, 119);
+				}
+			.userinfo dl.user-name dd.twitter{
+				font-family: Arial, sans-serif;
+				font-size:68%;
+				margin:1.5em 0 1.5em -22px;
+				padding-left:22px;
+				color:#999;
+				
+				background:url(/i/bg-icon-twitter.gif) no-repeat;
+			}
+			.userinfo dl.user-name dd.twitter #js-twitter-status-live{
+				padding-top:3px;
+			}
+				
+	/* // Так выводится в профайле заголовок имя юзера */
+
+.dl_logic_wrap {
+	margin: 0 0 20px 0;
+	float: left;
+	width: 100%;
+}	
+	
+.friends_list, .blogs_list, 
+#favorite_companies_list, #working_in, #staff, .interests {
+		width: 100%;
+		}
+	
+
+	.friends_list ul li, .blogs_list ul li, 
+	#favorite_companies_list ul li, #working_in ul li, #staff ul li {
+		
+		display: inline-block;
+		padding-left: 18px;
+		}
+	.interests ul li {
+		display: inline;
+	}
+		.friends_list ul li a, .blogs_list ul li a,
+		#favorite_companies_list ul li a, #working_in ul li a, #staff ul li a,
+		.interests ul li a {
+			margin-right: 11px;
+			color:#666;
+			font: normal 92.4%/1.5em arial;
+			}
+		.friends_list ul li a:hover, .blogs_list ul li a:hover,
+		#favorite_companies_list ul li a:hover, #working_in ul li a:hover, #staff ul li a:hover,
+		.interests ul li a:hover{
+			color:#A3A3A3
+	
+			}	
+	.interests ul li a {
+			margin: 0;
+		}
+			.friends_list ul li, #staff ul li  {
+				background: url(/i/bg-user2.gif) 0 50% no-repeat;
+			}
+			.blogs_list ul li  {
+				background: url(/i/icos/blog-small-open.png) 0 60% no-repeat;
+				line-height: 150%;
+			}
+			#favorite_companies_list ul li, #working_in ul li {
+				padding-left: 20px;
+				background: url(/i/icos/company-small.png) 0 60% no-repeat;
+				line-height: 150%;
+			}
+	.ICQ a, .Skype a {
+		text-decoration: none;
+	}
+		.ICQ a img {
+			margin: -.1em 3px 0 0;
+		}
+		.ICQ a > img {
+			margin-top: -.5em;
+		}
+		.Skype a img {
+			margin-right: 3px;
+		}
+		.Skype a > img {
+			margin-top: -.5em;
+		}
+					
+		/* Marking links to user's mutual friends and groups */
+		
+		.friends_list ul li a.cross,  .blogs_list ul li a.cross, 
+		#favorite_companies_list ul li a.cross, #working_in ul li a.cross,
+		#staff ul li a.cross,
+		.interests ul li a.cross {
+			font-weight: bold;
+		}
+		
+		
+.profile .banner {
+	margin-top: 2em;
+}
+
+	.company .userinfo {
+	margin: 20px 0 20px 0;
+}
+
+
+
+/* Recommendations (user to user) */
+
+
+.user-recommend-user {clear:both;}
+
+
+/* // Recommendations (user to user) */
+
+
+
+
+
+
+
+
+
+
+/* Companies section */
+
+.profile .live, .company .tag-cloud  {
+	background: #f0f0e7 url(/i/bg-corner-top-left.gif) no-repeat 0 0;
+	padding: 0;
+}
+	.company .tag-cloud ul {
+		float: left;
+		margin: 0 20px 20px;
+	}
+		
+
+.company .live ol {
+	margin: 0 1.67em;
+}
+	.company .live ol li {
+		line-height: 130%;
+		margin-bottom: .42em; /*5px*/
+		color: #999;
+	}
+		.company .live ol li a:hover {
+			text-decoration: none;
+			color: #fff;
+			background: #6c6;
+		}
+	.company .new-feedbacks div div {
+		padding-bottom: .84em; /*10px*/
+	}
+
+#stats h2 {
+	font: normal 2.17em/110% Verdana, sans-serif; /*26/12*/
+	color: #999;
+	padding-bottom: .38em;
+}
+		
+#stats dl {
+	margin: .83em 0; 
+}
+	#stats dl dt, #stats dd, #stats dl ul, #stats dl ul li {
+		display: inline;
+	}
+	#stats dl dt {
+		font: normal 1.5em/110% Verdana, sans-serif;
+		margin-right: .3em;
+		letter-spacing: -1px;
+		color: #ccc;
+	}
+	#stats dd {
+		line-height: 190%;
+		color: #666;
+	}
+		#stats dd li {
+			margin-right: .3em;
+		}
+			#stats dd a {
+				color: #999;
+			}
+.friends_list ul .empty_spaces, #staff ul .empty_spaces {
+	margin-left:-0.7em;
+	background:none;
+	padding-left:0;
+	font-size:92.4%;
+	line-height:1.5em;
+}
+
+	/* Шапка профайла компании */
+	.profile-title {margin: 0 0 20px 0;}
+		.profile-title .favicon {float: left; clear:both; margin: .75em 23px 0 23px;}
+		.profile-title h1 {
+			font: 2.5em/100% Verdana,sans-serif; /*30px/12px*/				
+			}
+			.profile-title h1 a {color: #666; text-decoration: none;}
+			.profile-title h1 a.admin-link {color: #ccc; font-size: 70%;text-decoration: none;}
+			.profile-title h1 a.admin-link:hover {color: green;}
+
+/* Отзывы пользователей о компании */			
+.company-comments {float:left; clear:both; width:100%;}
+
+
+/* Resume */
+
+	.hresume h2 {
+		font: 1.67em Arial, sans-serif; /*20/12*/
+		margin-top: 30px;
+		margin-left: 7.75em;
+		margin-bottom: 20px;
+		letter-spacing: -1px;
+		color: #333;
+		float: none;
+		clear: both;
+	}
+	.hresume dl dd {
+		line-height: 100%;
+	}
+
+#habrastat {
+	margin-top: 40px;
+}
+	.hresume .price_block {
+		padding-top:1em;
+	}
+	.hresume .price_block span {
+		color:#666633;
+		font-size:2.8em;
+		letter-spacing:-1px;
+		line-height: 120%;
+	}
+		.hresume .price_block span.price {			
+			color:#fff;
+			background-color:#9CC;
+			font-size:1.1em;
+		}
+	
+	.hresume .user-name {
+		padding-top:0;
+	}
+	
+	.hresume .hire_block span {
+		color:#E3A2A0;
+		font-family:arial,sans-serif;
+		font-size:2.6em;
+		letter-spacing:-1px;
+		line-height:40px;
+	}
+		.hresume .hire_block input.hire_button {
+			background-color:#E3A2A0;
+			color:#FFF;
+			font-size:1.1em;
+		}
+		
+		
+.resume .vevent {margin-bottom:30px;}	
+	
+
+/* Форма выборки постов в разделе "Моё" профайла */
+
+.filter-form ul {
+	margin: 0 0 0 15px;
+	padding-bottom: 10px;
+}
+	.filter-form li {float: left; clear: both; margin-bottom: 5px;}
+		.filter-form input, .filter-form label {float: left;}
+input.show {
+	float: right;
+	clear: both;
+	margin: -10px 10px 10px 0;
+}
+
+/*Вакансии пользователя*/
+
+.user-vacancies ol {
+	list-style: decimal;
+	margin: 0 10px 20px 40px;
+	color: #999;
+}
+	.user-vacancies {line-height: 170%;}
+	
+/* Блок с выводом Избранного, постов и комментов юзера. Отступы для топиков и комментов */
+
+
+.comments .items {
+	float: left;
+	clear: both;
+	width: 100%;
+	margin-top: 30px;
+}
+
+
+/* Юзернеймы и компании внутри хабратопиков и комментариев */
+
+a.user_link {
+	padding-left:14px;
+	color:#666;
+	font: normal 92.4%/1.5em arial;
+	background: url(/i/bg-user2.gif) 0 60% no-repeat;
+}
+
+.company_link {
+	padding-left:14px;
+	color:#666;
+	font: normal 92.4%/1.5em arial;
+	background: url(/i/bg-company.gif) 0 60% no-repeat;
+}
+
+#js-addFan, #js-removeFan, #js-addWorker, #js-removeWorker, span#js-companyWorkerInactive, span#js-companyFanInactive {
+	margin-top: 6px;
+	display: block;
+	width: 30px;
+	float: left;
+	background-repeat: no-repeat;
+}
+
+#js-addFan.hidden, #js-removeFan.hidden, #js-addWorker.hidden, #js-removeWorker.hidden {
+	display: none;
+}	
+a#js-addFan {
+	background-image: url('/i/company-fav.gif');
+	height: 19px;
+}
+a#js-addFan:hover {
+	background-position: left -19px;
+}
+a#js-removeFan {
+	background-image: url('/i/company-fav.gif');
+	background-position: left -19px;
+	height: 19px;
+}
+a#js-removeFan:hover {
+	background-position: left -38px;
+}
+span#js-companyFanInactive {
+	background-image: url('/i/company-fav.gif');
+	background-position: left -57px;
+	height: 19px;
+	width: 24px;
+}	
+
+a#js-addWorker {
+	background-image: url('/i/company-work.gif');
+	height: 20px;
+}
+a#js-addWorker:hover {
+	background-position: left -20px;
+}
+a#js-removeWorker {
+	background-image: url('/i/company-work.gif');
+	background-position: left -20px;
+	height: 20px;
+}
+a#js-removeWorker:hover {
+	background-position: left -40px;
+}
+span#js-companyWorkerInactive {
+	background-image: url('/i/company-work.gif');
+	background-position: left -60px;
+	height: 20px;
+	width: 28px;
+}
+
+a#js-blogInfoSwitcher, a#js-addBlogMember, a#js-removeBlogMember {
+	height: 20px;
+	display: block;
+	float: left;
+	background-repeat: no-repeat;
+	background-color: white;
+	margin-top: 10px;
+}
+a#js-addBlogMember, a#js-removeBlogMember {
+	width: 22px;
+	height:22px;
+	display: block;
+	background-image: url(/i/bg_subscribing.png);
+	background-position:0 0;
+}
+a#js-removeBlogMember{
+	background-position: -22px 0;
+}
+a#js-addBlogMember.hidden, a#js-removeBlogMember.hidden {
+	display: none;
+}
+a#js-blogInfoSwitcher {
+	width: 22px;
+	background-image: url(/i/icos/blog-info.gif);
+}
+a#js-blogInfoSwitcher.regular {
+	background-position: left top;
+}
+a#js-blogInfoSwitcher.regular:hover {
+	background-position: left bottom;
+}
+a#js-blogInfoSwitcher.active {
+	background-position: left bottom;
+}
+#js-invitationList {
+	height: 300px;
+	margin-left: 10px;
+	margin-right: 10px;
+	overflow: auto;
+	overflow-x: hidden;
+}
+
+#user-contacts .label {
+	display: block;
+	width: 270px;
+	float: left;
+}
+#user-contacts .end {
+	display: block;
+}
+#user-contacts .achtung-minen {
+	clear: both;
+}
+#user-contacts .js-field-holder input {
+	display: block;
+	float: left;
+}
+#user-contacts .label .name {
+	display: block;
+	width: 100px;
+	font-weight: bold;
+	float: left;
+}
+#user-contacts .label .begin {
+	display: block;
+	width: 170px;
+	float: right;
+	text-align: right;
+}
+#user-contacts .end, #user-contacts .begin {
+	font-size: 10px;
+	vertical-align: middle;
+	padding-top: 3px;
+	color: gray;
+}
+
+#invite-list {margin-top: 15px;}
+    #invite-list ul li {clear: both; padding-bottom: 10px;}
+        #invite-list ul li img {float:left; width: 24px; margin-right: 5px;}
+        #invite-list ul li a {line-height: 24px;}
+        #invite-list ul li a.idontlikeyouanymore { color: #c00; text-decoration: none;}
+    #invite-list .delete {color: #ddd; text-decoration: none;}
+    #invite-list .delete:hover {color: red;}
+    
+.friends_list ul li.banned a {text-decoration: line-through;}
