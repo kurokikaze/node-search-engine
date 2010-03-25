@@ -1,4 +1,4 @@
-var host_to_crawl = "wikipedia.org";
+var host_to_crawl = "ru.wikipedia.org";
 
 var unique = function(arr) {
     var a = [];
