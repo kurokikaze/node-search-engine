@@ -38,8 +38,8 @@ var parsePage = function(string) {
     try {
         var parsed = libxml.parseHtmlString(string);
     } catch(e) {
-	sys.puts('Cannot parse: ' + string);
-	return [];
+	    sys.puts('Cannot parse: ' + string);
+	    return [];
     }
 
     var links = parsed.find('//a');
@@ -88,12 +88,14 @@ var known_pages = [];
 
 var visited_pages = [];
 
+var num_of_streams = 0;
+
 var get_next_page = function() {
     for (page in known_pages) {
         if (known_pages[page] && !indexInArray(visited_pages, known_pages[page]) && (typeof known_pages[page] != 'undefined')) {
             visited_pages.push(known_pages[page]);
             // sys.puts(known_pages[page] + ' marked as visited');
-            sys.puts('Visited pages: ' + visited_pages.length);
+            // sys.puts('Visited pages: ' + visited_pages.length);
             return known_pages[page];
         }
     }
@@ -101,11 +103,11 @@ var get_next_page = function() {
     process.exit(); // End of list
 }
 
-var crawl_page = function (URL) {
-    sys.puts('Visiting ' + URL);
+var crawl_page = function (URL, stream_id) {
+    sys.puts('Stream ' + stream_id + ' visiting ' + URL);
     getPage(URL, function(code, text, headers) {
 
-        sys.puts('Got ' + code + ' answer, headers is: ' + JSON.stringify(headers));
+        // sys.puts('Got ' + code + ' answer, headers is: ' + JSON.stringify(headers));
         var links = [];
 
         if (code == 200) {
@@ -132,7 +134,14 @@ var crawl_page = function (URL) {
 
         known_pages = unique(known_pages.concat(links));
         sys.puts('Known pages: ' + known_pages.length);
-        crawl_page(get_next_page());
+        crawl_page(get_next_page(), stream_id);
+
+        // Create new stream if available and have unvisited pages
+        if (num_of_streams < settings.max_streams && known_pages.length > visited_pages.length) {
+            num_of_streams++;
+            crawl_page(get_next_page(), num_of_streams);
+            sys.puts('Starting another stream: ' + num_of_streams + ' of ' + settings.max_streams);
+        }
     });
 }
 
@@ -140,4 +149,5 @@ var save_page = function (URL, text) {
     db.saveDoc({'url' : URL, 'text' : text});
 }
 
-crawl_page('/wiki/User_talk:Crazyswordsman/archive_8');
+crawl_page('/', 1);
+num_of_streams = 1;
