@@ -61,9 +61,9 @@ var parsePage = function(string) {
     return destinations;
 };
 
-var getPage = function(URL, callback) {
+var getPage = function(URL, connection, callback) {
 
-    var request = target_site.request("GET", URL, {"host": settings.targethost});
+    var request = connection.request("GET", URL, {"host": settings.targethost});
 
     request.addListener('response', function (response) {
       response.setBodyEncoding("utf8");
@@ -103,11 +103,12 @@ var get_next_page = function() {
     process.exit(); // End of list
 }
 
-var crawl_page = function (URL, stream_id) {
+var crawl_page = function (URL, connection, stream_id) {
     sys.puts('Stream ' + stream_id + ' visiting ' + URL);
-    getPage(URL, function(code, text, headers) {
+    getPage(URL, connection, function(code, text, headers) {
 
-        // sys.puts('Got ' + code + ' answer, headers is: ' + JSON.stringify(headers));
+        // sys.puts('Got ' + code + ' answer from '+URL+', headers is: ' + JSON.stringify(headers));
+        sys.puts('Got ' + code + ' answer from ' + URL);
         var links = [];
 
         if (code == 200) {
@@ -127,6 +128,8 @@ var crawl_page = function (URL, stream_id) {
 
         } else if (code == 404) {
             // Do nothing, maybe add some sort of log entry
+        } else if (code == 400) {
+            sys.puts('Bad request: ' + URL);
         } else {
             sys.puts('Unknown code: ' + code + '\nHeaders is: ' + JSON.stringify(headers));
         }
@@ -134,12 +137,13 @@ var crawl_page = function (URL, stream_id) {
 
         known_pages = unique(known_pages.concat(links));
         sys.puts('Known pages: ' + known_pages.length);
-        crawl_page(get_next_page(), stream_id);
+        crawl_page(get_next_page(), connection, stream_id);
 
         // Create new stream if available and have unvisited pages
         if (num_of_streams < settings.max_streams && known_pages.length > visited_pages.length) {
             num_of_streams++;
-            crawl_page(get_next_page(), num_of_streams);
+            var new_connection = http.createClient(80, settings.targethost);
+            crawl_page(get_next_page(), new_connection, num_of_streams);
             sys.puts('Starting another stream: ' + num_of_streams + ' of ' + settings.max_streams);
         }
     });
@@ -149,5 +153,7 @@ var save_page = function (URL, text) {
     db.saveDoc({'url' : URL, 'text' : text});
 }
 
-crawl_page('/', 1);
-num_of_streams = 1;
+crawl_page('/', target_site, 1);
+crawl_page('/wiki/User_talk:Uberfuzzy', http.createClient(80, settings.targethost), 2);
+
+num_of_streams = 2;
