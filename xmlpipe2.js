@@ -31,46 +31,82 @@ Combo.prototype = {
 
 var db = couch.db(settings.couchbase, settings.couchhost);
 
+process_document = function (docs) {
+    if (docs.length > 0) {
+        var document = docs.pop();
+
+        db.openDoc(document.id,{
+            'success': function(page) {
+                sys.puts('<sphinx:document id="' + page._id + '">');
+
+                sys.puts('<subject><![CDATA[[');
+                sys.puts(page.title);
+                sys.puts(']]></subject>');
+
+                sys.puts('<content><![CDATA[[');
+                sys.puts(page.text);
+                sys.puts(']]></content>');
+
+                sys.puts('<published>' + (new Date()).getTime().toString() + '</published>');
+
+                sys.puts('</sphinx:document>');
+
+                process_document(docs);
+            },
+            'error':function (e) {
+                sys.puts('Error getting doc: ' + sys.inspect(e));
+            }
+        });
+
+    } else {
+        sys.puts('</sphinx:docset>');
+    }
+};
+
 db.allDocs({
     'success': function(docs) {
         //sys.puts('Got all docs: ' + JSON.stringify(docs));
 
-        print_xml = new Combo(function(data) {
-            var xmldoc = new libxml.Document(function(n) {
-              n.node('sphinx:docset', function(n) {
-                n.node('sphinx:schema', function(n) {
-                  n.node('sphinx:field', {'name':'subject'});
-                  n.node('sphinx:field', {'name':'content'});
-                  n.node('sphinx:field', {'name':'published', 'type':'timestamp'});
-                });
-                for (doc in data) {
+        sys.puts('<sphinx:docset>');
+        sys.puts('<sphinx:schema>');
 
-                    // sys.puts(JSON.stringify(data[doc]));
+        sys.puts('<sphinx:field name="subject" />');
+        sys.puts('<sphinx:field name="content" />');
+        sys.puts('<sphinx:field name="published" type="timestamp" />');
 
-                    var doc_fields = data[doc]['0'];
-                    n.node('sphinx:document', {'id':doc_fields._id}, function(n){
-                        n.node('subject', '<![CDATA[[' + doc_fields.title + ']]>');
-                        n.node('content', '<![CDATA[[' + doc_fields.text + ']]>');
-                        n.node('published', (new Date()).getTime().toString());
-                    });
-                }
-              });
-            });
+        sys.puts('</sphinx:schema>');
 
-            sys.write(xmldoc);
-        });
-
-        for (doc in docs.rows) {
+        process_document(docs.rows);
+        /*for (doc in docs.rows) {
             if (docs.rows[doc]) {
                 //sys.puts('Fetch ' + docs.rows[i].id);
-                db.openDoc(docs.rows[doc].id,{
-                    'success': print_xml.add(),
-                    'error':function (e) {
-                        sys.puts('Error getting doc: ' + sys.inspect(e));
-                    }
+
+            }
+        } */
+
+        /*var xmldoc = new libxml.Document(function(n) {
+          n.node('sphinx:docset', function(n) {
+            n.node('sphinx:schema', function(n) {
+              n.node('sphinx:field', {'name':'subject'});
+              n.node('sphinx:field', {'name':'content'});
+              n.node('sphinx:field', {'name':'published', 'type':'timestamp'});
+            });
+            for (doc in data) {
+
+                // sys.puts(JSON.stringify(data[doc]));
+
+                var doc_fields = data[doc]['0'];
+                n.node('sphinx:document', {'id':doc_fields._id}, function(n){
+                    n.node('subject', '<![CDATA[[' + doc_fields.title + ']]>');
+                    n.node('content', '<![CDATA[[' + doc_fields.text + ']]>');
+                    n.node('published', (new Date()).getTime().toString());
                 });
             }
-        }
+          });
+        });
+
+        sys.write(xmldoc);*/
+
     },
     'error': function(errorResponse) {
         sys.puts('Error getting all docs: ' + JSON.stringify(errorResponse.reason));
