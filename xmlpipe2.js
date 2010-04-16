@@ -13,23 +13,23 @@ var process_document = function (docs) {
             'success': function(page) {
                 sys.puts('<sphinx:document id="' + page._id + '">');
 
-                sys.puts('<subject><![CDATA[');
+                sys.puts('<subject>');
 
                 if (page.title) {
-                    sys.puts(page.title.replace(']]>', ''));
+                    sys.puts(page.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
                 } else {
                     sys.puts('No title');
                 }
 
-                sys.puts(']]></subject>');
+                sys.puts('</subject>');
 
-                sys.puts('<content><![CDATA[');
+                sys.puts('<content>');
 
                 if (page.text) {
-                    sys.puts(page.text.replace(']]>', ''));
+                    sys.puts(page.text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
                 }
 
-                sys.puts(']]></content>');
+                sys.puts('</content>');
 
                 if (page.url) {
                     sys.puts('<url>' + page.url + '</url>');
