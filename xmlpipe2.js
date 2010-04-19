@@ -11,7 +11,7 @@ var process_document = function (docs) {
 
         db.openDoc(document.id,{
             'success': function(page) {
-                sys.puts('<sphinx:document id="' + page._id + '">');
+                sys.puts('<sphinx:document id="' + (page.doc_id + 1) + '">');
 
                 sys.puts('<subject>');
 

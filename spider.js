@@ -198,7 +198,7 @@ var crawl_page = function (URL, connection, stream_id) {
 var doc_id = 0;
 var save_page = function (URL, title, text) {
 
-    db.saveDoc({'url' : URL, 'title' : title, 'text' : text});
+    db.saveDoc({'url' : URL, 'title' : title, 'text' : text, 'doc_id': doc_id});
 
     doc_id++;
 }
