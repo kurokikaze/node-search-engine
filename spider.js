@@ -42,24 +42,29 @@ var parsePage = function(string) {
 	    return [];
     }
 
-    var links = parsed.find('//a');
+    return parsed;
+};
+
+var getLinks = function(parsed_html) {
+
+    var links = parsed_html.find('//a');
     var destinations = [];
     for (link in links) {
         var attr = links[link].attr('href');
         if (attr && attr.value) {
             var url_parts = url.parse(attr.value());
 
-	        if (!url_parts.hostname || url_parts.hostname.indexOf(settings.targethost) > -1) {
-            	destinations.push(url_parts.pathname);
-	        } else {
-		        // sys.puts('Found outbound link to ' + url_parts.hostname);
-	        }
+            if (!url_parts.hostname || url_parts.hostname.indexOf(settings.targethost) > -1) {
+                destinations.push(url_parts.pathname);
+            } else {
+                // sys.puts('Found outbound link to ' + url_parts.hostname);
+            }
 
         }
     }
 
     return destinations;
-};
+}
 
 var getPage = function(URL, connection, callback) {
 
@@ -83,6 +88,37 @@ var getPage = function(URL, connection, callback) {
     });
     request.end();
 };
+
+var cleanPage = function(parsed_html) {
+
+    var scripts = parsed_html.find('//script');
+    for (script in scripts) {
+        scripts[script].remove();
+    }
+
+    var styles = parsed_html.find('//style');
+    for (style in styles) {
+        styles[style].remove();
+    }
+
+    var body = parsed_html.get('/html/body');
+
+    if (body && body.text) {
+        body = body.text();
+    } else {
+        sys.puts('Body is empty?');
+        body = '';
+    }
+
+    return body;
+}
+
+var pageTitle = function(parsed_html) {
+
+    var title = parsed_html.get('//head/title');
+
+    return title.text();
+}
 
 var known_pages = [];
 
@@ -115,8 +151,16 @@ var crawl_page = function (URL, connection, stream_id) {
             var content_type = get_content_type(headers);
 
             if (content_type == 'text/html' || content_type == 'text/plain' || content_type == '') {
-                links = parsePage(text);
-                save_page(URL, text, code);
+                parsed_page = parsePage(text);
+
+                if (parsed_page.find) {
+
+                    links = getLinks(parsed_page);
+
+                    save_page(URL, pageTitle(parsed_page), cleanPage(parsed_page));
+                } else {
+                    sys.puts('Bad parsed page: ' + URL);
+                }
             } else {
                 sys.puts('Strange content type: ' + content-type);
             }
@@ -137,7 +181,9 @@ var crawl_page = function (URL, connection, stream_id) {
 
         known_pages = unique(known_pages.concat(links));
         sys.puts('Known pages: ' + known_pages.length);
-        crawl_page(get_next_page(), connection, stream_id);
+        setTimeout(function() {
+            crawl_page(get_next_page(), connection, stream_id);
+        }, 10000);
 
         // Create new stream if available and have unvisited pages
         if (num_of_streams < settings.max_streams && known_pages.length > visited_pages.length) {
@@ -149,8 +195,12 @@ var crawl_page = function (URL, connection, stream_id) {
     });
 }
 
-var save_page = function (URL, text) {
-    db.saveDoc({'url' : URL, 'text' : text});
+var doc_id = 0;
+var save_page = function (URL, title, text) {
+
+    db.saveDoc({'url' : URL, 'title' : title, 'text' : text});
+
+    doc_id++;
 }
 
 crawl_page('/', target_site, 1);
