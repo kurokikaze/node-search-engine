@@ -183,7 +183,7 @@ var crawl_page = function (URL, connection, stream_id) {
         sys.puts('Known pages: ' + known_pages.length);
         setTimeout(function() {
             crawl_page(get_next_page(), connection, stream_id);
-        }, 500);
+        }, settings.crawl_timeout);
 
         // Create new stream if available and have unvisited pages
         if (num_of_streams < settings.max_streams && known_pages.length > visited_pages.length) {
