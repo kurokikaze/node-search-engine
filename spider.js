@@ -55,7 +55,7 @@ var getLinks = function(parsed_html, baseURL) {
             var url_parts = url.parse(url.resolve(baseURL, attr.value()));
 
             if (!url_parts.hostname || url_parts.hostname.indexOf(settings.targethost) > -1) {
-                destinations.push(url_parts.pathname);
+                destinations.push(url_parts.pathname + url_parts.search);
             } else {
                 // sys.puts('Found outbound link to ' + url_parts.hostname);
             }
