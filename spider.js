@@ -39,7 +39,7 @@ var parsePage = function(string) {
         var parsed = libxml.parseHtmlString(string);
     } catch(e) {
 	    sys.puts('Cannot parse: ' + string);
-	    return [];
+	    return {};
     }
 
     return parsed;
@@ -48,6 +48,7 @@ var parsePage = function(string) {
 var getLinks = function(parsed_html, baseURL) {
 
     var links = parsed_html.find('//a');
+
     var destinations = [];
     for (link in links) {
         var attr = links[link].attr('href');
@@ -55,7 +56,11 @@ var getLinks = function(parsed_html, baseURL) {
             var url_parts = url.parse(url.resolve(baseURL, attr.value()));
 
             if (!url_parts.hostname || url_parts.hostname.indexOf(settings.targethost) > -1) {
-                destinations.push(url_parts.pathname + url_parts.search);
+                var destination = url_parts.pathname;
+                if (url_parts.search) {
+                    destination = destination + url_parts.search;
+                }
+                destinations.push(destination);
             } else {
                 // sys.puts('Found outbound link to ' + url_parts.hostname);
             }
@@ -155,9 +160,15 @@ var crawl_page = function (URL, connection, stream_id) {
 
                 if (parsed_page.find) {
 
+                    var title = pageTitle(parsed_page);
+
+                    var page_text = cleanPage(parsed_page);
+
                     links = getLinks(parsed_page, URL);
 
-                    save_page(URL, pageTitle(parsed_page), cleanPage(parsed_page));
+                    sys.puts('Got ' + links.length + ' links from ' + URL);
+
+                    save_page(URL, title, page_text);
                 } else {
                     sys.puts('Bad parsed page: ' + URL);
                 }
@@ -198,7 +209,7 @@ var crawl_page = function (URL, connection, stream_id) {
 var doc_id = 0;
 var save_page = function (URL, title, text) {
 
-    db.saveDoc({'url' : URL, 'title' : title, 'text' : text, 'doc_id': doc_id});
+    db.saveDoc({'url' : URL, 'title' : title, 'text' : text, '_id': doc_id});
 
     doc_id++;
 }
