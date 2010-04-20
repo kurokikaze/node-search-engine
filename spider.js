@@ -45,14 +45,14 @@ var parsePage = function(string) {
     return parsed;
 };
 
-var getLinks = function(parsed_html) {
+var getLinks = function(parsed_html, baseURL) {
 
     var links = parsed_html.find('//a');
     var destinations = [];
     for (link in links) {
         var attr = links[link].attr('href');
         if (attr && attr.value) {
-            var url_parts = url.parse(attr.value());
+            var url_parts = url.parse(url.resolve(baseURL, attr.value()));
 
             if (!url_parts.hostname || url_parts.hostname.indexOf(settings.targethost) > -1) {
                 destinations.push(url_parts.pathname);
@@ -155,7 +155,7 @@ var crawl_page = function (URL, connection, stream_id) {
 
                 if (parsed_page.find) {
 
-                    links = getLinks(parsed_page);
+                    links = getLinks(parsed_page, URL);
 
                     save_page(URL, pageTitle(parsed_page), cleanPage(parsed_page));
                 } else {
@@ -183,7 +183,7 @@ var crawl_page = function (URL, connection, stream_id) {
         sys.puts('Known pages: ' + known_pages.length);
         setTimeout(function() {
             crawl_page(get_next_page(), connection, stream_id);
-        }, 10000);
+        }, 500);
 
         // Create new stream if available and have unvisited pages
         if (num_of_streams < settings.max_streams && known_pages.length > visited_pages.length) {
@@ -204,6 +204,5 @@ var save_page = function (URL, title, text) {
 }
 
 crawl_page('/', target_site, 1);
-crawl_page('/wiki/User_talk:Uberfuzzy', http.createClient(80, settings.targethost), 2);
 
-num_of_streams = 2;
+num_of_streams = 1;
