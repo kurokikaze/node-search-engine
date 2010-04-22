@@ -1,0 +1,10 @@
+%h1 Search results
+
+%form{ method: 'get', action: 'search' }
+  %input{ type: 'text', name: 'query', value: query }
+  %input{ type: 'submit', value: 'Search!' }
+
+%matches= number_of_matches
+
+%ul#results
+  != this.partial('result.html.haml', {collection: results})
