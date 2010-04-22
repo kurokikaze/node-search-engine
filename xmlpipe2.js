@@ -5,13 +5,15 @@ var couch = require('./node-couch').CouchDB,
 
 var db = couch.db(settings.couchbase, settings.couchhost);
 
+var doc_id = 1;
 var process_document = function (docs) {
     if (docs.length > 0) {
+        doc_id++;
         var document = docs.pop();
 
         db.openDoc(document.id,{
             'success': function(page) {
-                sys.puts('<sphinx:document id="' + (page.doc_id + 1) + '">');
+                sys.puts('<sphinx:document id="' + parseInt(page._id) + '">');
 
                 sys.puts('<subject>');
 
@@ -36,7 +38,6 @@ var process_document = function (docs) {
                 } else {
                     sys.puts('<url />');
                 }
-                sys.puts('<published>' + (new Date()).getTime().toString() + '</published>');
 
                 sys.puts('</sphinx:document>');
 
@@ -62,7 +63,6 @@ db.allDocs({
         sys.puts(' <sphinx:field name="subject" />');
         sys.puts(' <sphinx:field name="content" />');
         sys.puts(' <sphinx:field name="url" />');
-        sys.puts(' <sphinx:field name="published" type="timestamp" />');
 
         sys.puts('</sphinx:schema>');
 
