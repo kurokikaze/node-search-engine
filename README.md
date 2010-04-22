@@ -5,6 +5,8 @@ This is a really simple search engine, built with:
 * CouchDB
 * Express web framework
 
+Right now it uses Node.js v0.1.90 (`process.mixin` is the only thing that won't work in 0.1.91 though).
+
 # Usage
 
 First, you need to setup host to crawl in `settings.js`. Right now it's `finalfantasy.wikia.com`.
@@ -19,7 +21,9 @@ Run:
 
 Spider starts crawling pages and putting them into DB.
 
-To index crawled pages with Sphinx, enter `node /path/to/xmlpipe2.js` in `sphinx.conf` as xmlpipe2 source.
+To index crawled pages with Sphinx, enter `node /path/to/xmlpipe2.js` in `sphinx.conf` as xmlpipe2 source. To index newly created source right now, start indexer manually:
+
+    indexer <sourcename>
 
 ## Searching
 
