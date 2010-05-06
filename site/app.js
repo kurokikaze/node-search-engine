@@ -27,6 +27,7 @@ get('/search', function(){
         this.render('results.html.haml', {'locals': {'header': 'Search results for "' + query + '"', 'query': query, 'results': 'Connection error'}});
     }
     //sys.puts('Connected, sending query');
+    debugger;
     limestone.query({'query': query, maxmatches: 20}, function(err, answer) {
         limestone.disconnect();
 
@@ -42,17 +43,28 @@ get('/search', function(){
             });
         })(function(elements){
             var pages = [];
-            for (element in elements) {
-                pages.push({'title': elements[element].title, 'url': 'http://' + elements[element].url});
-            }
 
-            self.render('results.html.haml', {
-                'locals': {
-                    'header': 'Search results for "' + query + '"',
-                    'query': query,
-                    'number_of_matches': 'Found ' + answer.match_count + ' matches',
-                    'results': pages
-                }
+            var texts = elements.map(function(doc){return doc.text});
+
+            limestone.connect(9312, function(err) {
+
+                limestone.buildExcerpts(texts, 'searchengine', answer.words, {}, function(err, excerpts) {
+
+                    for (element in elements) {
+                        pages.push({'title': elements[element].title, 'url': 'http://' + elements[element].url, 'excerpt':'excerpt for ' + elements[element]._id + '!'});
+                    }
+
+                    self.render('results.html.haml', {
+                        'locals': {
+                            'header': 'Search results for "' + query + '"',
+                            'query': query,
+                            'number_of_matches': 'Found ' + answer.match_count + ' matches, words are ' + JSON.stringify(answer.words),
+                            'results': pages
+                        }
+                    });
+
+                });
+
             });
         });
     });
