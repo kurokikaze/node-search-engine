@@ -101,7 +101,11 @@ function _interact(verb, path, successStatus, options, host) {
 				sys.puts("COMPLETED " + requestPath + " -> " + verb);
 				sys.puts(responseBody)
 			}
-			responseBody = JSON.parse(responseBody);
+                        try {
+                            responseBody = JSON.parse(responseBody);
+                        } catch(e) {
+                            sys.puts('Error parsing JSON: ' + JSON.stringify(e));
+                        }
 
 			if (response.statusCode === successStatus) {
 				if (options.success) {
