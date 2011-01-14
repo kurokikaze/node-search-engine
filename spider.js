@@ -96,21 +96,28 @@ function create(targethost, num_of_streams) {
 
 	var getPage = function(URL, connection, callback) {
 
+		//if (URL[1] != '/') {
+		var connection = http.createClient(80, URL);
+		var targethost = URL;
+		URL = '/';
+		//}
+	
 		sys.puts('Getting URL ' + URL)
-		var request = connection.request("GET", URL, {"host": settings.targethost, 'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3', 'Accept':'text/html', 'Accept-Charset': 'UTF-8'});
+		var request = connection.request("GET", URL, {"host": targethost, 'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3', 'Accept':'text/html', 'Accept-Charset': 'UTF-8'});
 
-		request.addListener('response', function (response) {
+		request.on('response', function (response) {
+		  sys.puts('URL: ' + URL + ' > ' + response.statusCode + ' (preliminary)');
 		  response.setEncoding("UTF-8");
 
 		  //var text = new Buffer('');
 		  var text = '';
 
-		  response.addListener("data", function (chunk) {
+		  response.on("data", function (chunk) {
 			  text += chunk;
 		  });
 
-		  response.addListener('end', function() {
-	//          sys.puts('URL: ' + URL + ' > ' + response.statusCode);
+		  response.on('end', function() {
+	          sys.puts('URL: ' + URL + ' > ' + response.statusCode);
 	//          sys.puts('HEADERS > ' + JSON.stringify(response.headers));
 
 			  // sys.puts('Type of text: ' + (text instanceof Buffer));
@@ -144,6 +151,8 @@ function create(targethost, num_of_streams) {
 			// sys.puts('Got ' + code + ' answer from '+URL+', headers is: ' + JSON.stringify(headers));
 			sys.puts('Got ' + code + ' answer from ' + URL);
 			var links = [];
+			
+			spider.emit('answer', URL, code);
 
 			if (code == 200) {
 				var content_type = get_content_type(headers);

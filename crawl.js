@@ -1,63 +1,88 @@
 var spider = require('./spider');
 var sys = require('sys');
+var habr = require('./habraparsers');
+var urlparser = require('url');
+
+var Db = require('./mongodb').Db,
+  Connection = require('./mongodb').Connection,
+  Server = require('./mongodb').Server,
+  // BSON = require('./mongodb').BSONPure;
+  BSON = require('./mongodb').BSONNative;
+
+// Ugly, but necessary part  
+var host = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
+var port = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
+
+sys.puts("Connecting to " + host + ":" + port);
+var db = new Db('habrausers', new Server(host, port, {}));
 
 var crawler = spider.create('habrahabr.ru', 2);
 
-crawler.addpage('/people/')
-for (i=2; i<=12; i++) {
+var round = 2;
+
+// crawler.addpage('shoohurt.habrahabr.ru');
+/*for (i=2; i<=1187; i++) {
 	crawler.addpage('/people/page' + i + '/');
-}
+}*/
 
-crawler.on('page', function(page) {
-	var html = crawler.parse(page);
-	sys.puts('Title: ' + crawler.title(html));
-	var users = fetch_users(html);
-});
-
-crawler.on('end', function() {
-	sys.puts('Task ended');
-});
-
-crawler.on('error', function(err) {
-	sys.puts('ERROR: ' . err.message);
-});
-
-crawler.run();
-// http://habrahabr.ru/people/page1187/
-
-fetch_users = function(html) {
-	var user_urls = [];
-
-    sys.puts('Getting users table');
-    var usertable = html.find("//div[@id='rate-table-wrap']/table");
-    sys.puts('Got users table');
-    if (usertable[0].find) {
-		sys.puts('Getting user rows');
-		var users = usertable[0].find('tr');
-		sys.puts('Got user rows');
-
-		for (user in users) {
-			if (users[user].find && (users[user].find('td').length > 0)) {
-
-				var profile_dl = users[user].find('td')[2].find('dl')[0];
-				var karma = users[user].find('td')[3].text();
-				var rating = users[user].find('td')[4].text();
-				if (profile_dl.find) {
-					var profile_link = profile_dl.find('dt')[0].find('a')[0].attr('href');
-					var profile_name = profile_dl.find('dt')[0].find('a')[0].text()
-
-					// save_user(profile_link, profile_name, karma, rating);
-					user_urls.push(profile_link);
-				} else {
-					profile_link = 'none';
-				}
-
-				sys.puts('User URL: ' + profile_link);
-			} else {
-				sys.puts('Broken user');
+db.open(function(err, db) {
+	if (!err) {
+	  db.collection('shoohurt', function(err, collection) {
+		crawler.on('page', function(page) {
+			var html = crawler.parse(page);
+			sys.puts('Title: ' + crawler.title(html));
+			var friends = habr.fetch_friends(html);
+			for (friend in friends) {
+				//collection.find({'link' : friends[friend]}, function(err, cursor) {
+//					if (cursor.count() == 0) {
+						collection.insert({'link': friends[friend], 'number': round + 1});
+//					} else {
+//						sys.puts('Met ' + friends[friend] + ' for second time');
+//					}
+//				});
 			}
-		} 
+			
+			sys.puts('Inserted ' + friends.length + ' friends');
+/*			var users = fetch_users(html);
+			for (user in users) {
+				collection.insert({'link': users[user]});
+			}*/
+		});
 
-    }
-	return user_urls;
-}
+		crawler.on('end', function() {
+			sys.puts('Task ended');
+			process.exit();
+		});
+
+		crawler.on('error', function(err) {
+			sys.puts('ERROR: ' . err.message);
+		});
+		
+		crawler.on('answer', function(URL, code) {
+			sys.puts('Got answer from ' + URL + ' with code ' + code);
+		});
+
+		sys.puts('DB opened');
+		collection.find({'number' : round}, function(err, cursor) {
+			cursor.each(function(err, item) {
+              if(item != null) {
+                sys.puts('Item: ' + sys.inspect(item));
+                sys.puts("created at " + new Date(item._id.generationTime) + "\n");
+				var url = urlparser.parse(item.link);
+				crawler.addpage(url.hostname)
+              }
+              // Null signifies end of iterator
+              if (item == null) {                
+                  crawler.run();
+              }			
+			});
+		});
+		// crawler.run();
+	  });	
+	} else {
+		sys.puts('Error opening DB: ' + err.message);	
+	}
+});
+
+
+// http://habrahabr.ru/people/page1187/
