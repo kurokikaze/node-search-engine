@@ -23,7 +23,7 @@ function get_content_type(headers) {
     return headers['content-type'].split(';')[0];
 }
 
-var libxml = require("./libxmljs"),
+var libxml = require("libxmljs"),
     http = require("http"),
     url = require("url"),
     settings = require("./settings"),
@@ -76,7 +76,7 @@ var getPage = function(URL, connection, callback) {
     var request = connection.request("GET", URL, {"host": settings.targethost});
 
     request.addListener('response', function (response) {
-      response.setBodyEncoding("utf8");
+      response.setEncoding("utf8");
 
       var text = '';
 
@@ -121,8 +121,11 @@ var cleanPage = function(parsed_html) {
 var pageTitle = function(parsed_html) {
 
     var title = parsed_html.get('//head/title');
+	if(title){
+		title = title.text();
+	}
 
-    return title.text();
+    return title;
 }
 
 var known_pages = [];
@@ -173,7 +176,7 @@ var crawl_page = function (URL, connection, stream_id) {
                     sys.puts('Bad parsed page: ' + URL);
                 }
             } else {
-                sys.puts('Strange content type: ' + content-type);
+                sys.puts('Strange content type: ' + content_type);
             }
 
         } else if (code == 301 || code == 303) {
