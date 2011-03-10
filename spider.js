@@ -27,11 +27,13 @@ var libxml = require("libxmljs"),
     http = require("http"),
     url = require("url"),
     settings = require("./settings"),
-    couch = require("./node-couch").CouchDB,
+    couch = require("./lib/couchdb"),
     sys = require("sys");
 
 var target_site = http.createClient(80, settings.targethost);
-var db = couch.db(settings.couchbase, settings.couchhost);
+var ch = settings.couchhost.split(':');
+var client = couch.createClient(ch[1], ch[0]);
+var db = client.db('spider');
 
 
 var parsePage = function(string) {
@@ -212,7 +214,7 @@ var crawl_page = function (URL, connection, stream_id) {
 var doc_id = 1;
 var save_page = function (URL, title, text) {
 
-    db.saveDoc({'url' : URL, 'title' : title, 'text' : text, '_id': doc_id});
+    db.saveDoc(doc_id, {'url' : URL, 'title' : title, 'text' : text});
 
     doc_id++;
 }
